@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近复习了模块化的几种组织方式，按阶段进行整理。其中包括script标签、CommonJS规范、AMD、CMD和ES6的模块化标准。基础知识要经常温故知新。">
+<meta name="keywords" content="es6,commonJS,import,export,AMD">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模块化的前世今生">
+<meta property="og:url" content="http://heoh.github.io/2019/01/09/前端总结/模块化的前世今生/index.html">
+<meta property="og:site_name" content="大明的小想法">
+<meta property="og:description" content="最近复习了模块化的几种组织方式，按阶段进行整理。其中包括script标签、CommonJS规范、AMD、CMD和ES6的模块化标准。基础知识要经常温故知新。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-09T05:29:01.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="模块化的前世今生">
+<meta name="twitter:description" content="最近复习了模块化的几种组织方式，按阶段进行整理。其中包括script标签、CommonJS规范、AMD、CMD和ES6的模块化标准。基础知识要经常温故知新。">
+
+
+
+  <link rel="alternate" href="/atom.xml" title="大明的小想法" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://heoh.github.io/2019/01/09/前端总结/模块化的前世今生/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>模块化的前世今生 | 大明的小想法</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大明的小想法</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://heoh.github.io/2019/01/09/前端总结/模块化的前世今生/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="heoh">
+      <meta itemprop="description" content="大明的一些小想法。 有一些随笔和学习笔记。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大明的小想法">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">模块化的前世今生
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2019-01-09 00:00:00 / Modified: 13:29:01" itemprop="dateCreated datePublished" datetime="2019-01-09T00:00:00+08:00">2019-01-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/前端总结/" itemprop="url" rel="index"><span itemprop="name">前端总结</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/前端总结/模块化/" itemprop="url" rel="index"><span itemprop="name">模块化</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近复习了模块化的几种组织方式，按阶段进行整理。其中包括<code>script标签</code>、<code>CommonJS规范</code>、<code>AMD</code>、<code>CMD</code>和<code>ES6</code>的模块化标准。基础知识要经常温故知新。</p>
+<a id="more"></a>
+<p>js模块化分成了几个阶段：</p>
+<h3 id="script标签"><a href="#script标签" class="headerlink" title="script标签"></a>script标签</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;a.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;b.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>早期使用script标签来引入模块，有这么几个缺点</p>
+<ol>
+<li>加载的时候会停止渲染网页，引入的js文件越多，网页失去响应的时间越长；</li>
+<li>会污染全局变量；</li>
+<li>js文件之间存在依赖关系，加载是有顺序的，依赖性最大的要放到最后去加载；当项目规模较大时，依赖关系变得错综复杂。</li>
+<li>要引入的js文件太多，不美观，代码难以管理。</li>
+</ol>
+<h3 id="CommonJS规范"><a href="#CommonJS规范" class="headerlink" title="CommonJS规范"></a>CommonJS规范</h3><p><strong>是服务端模块的规范</strong>，在Node中使用：允许模块通过require的方式来同步加载所要依赖的其他模块，然后通过exports或者module.exports来导出暴露的接口。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 导出</span><br><span class="line">module.exports = moduleA.someFunc;</span><br><span class="line">// 导入</span><br><span class="line">const moduleA = require(&apos;./moduleA&apos;);</span><br></pre></td></tr></table></figure>
+<p>在服务器端，模块文件保存在本地磁盘，等待时间就是磁盘的读取时间。但对于浏览器而言，由于模块都放在服务器端，等待时间取决于网上的快慢。因此更合理的方案是异步加载模块。</p>
+<p>缺点：</p>
+<ol>
+<li>不能并行加载模块，会阻塞浏览器加载；</li>
+<li>代码无法直接运行在浏览器环境下，必须通过工具转换成标准的 ES5；</li>
+</ol>
+<h3 id="AMD和require-js"><a href="#AMD和require-js" class="headerlink" title="AMD和require.js"></a>AMD和require.js</h3><p>是一个异步模块定义。为前端JS的表现制定规范。需要<code>require.js</code>这个库来进行支持。</p>
+<p>AMD采用异步方式加载模块，模块加载不影响后面语句的运行。依赖这个模块的语句定义在回调函数中，等依赖加载完成后，这个回调函数才会执行。</p>
+<p>需要先define模块的依赖项，然后使用require引用模块：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 定义一个模块</span><br><span class="line">define(&apos;module&apos;, [&apos;dep&apos;], function (dep) &#123;</span><br><span class="line">  return exports;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">// 导入和使用</span><br><span class="line">require([&apos;module&apos;], function (module) &#123;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="CMD和sea-js"><a href="#CMD和sea-js" class="headerlink" title="CMD和sea.js"></a>CMD和sea.js</h3><p>CMD为通用模块定义，会在define中将<code>require</code>、<code>exports</code>、<code>module</code>三个参数传入进行管理。</p>
+<ul>
+<li>require：可以把其他模块导入进来的一个参数；</li>
+<li>exports：可以把模块内的一些属性和方法导出的；</li>
+<li>module： 是一个对象，上面存储了与当前模块相关联的一些属性和方法。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">define(function (require, exports, module) &#123;</span><br><span class="line">  var add = function (a, b) &#123;</span><br><span class="line">    return a + b;</span><br><span class="line">  &#125;</span><br><span class="line">  exports.add = add;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">//导入和使用</span><br><span class="line">seajs.use([&apos;math.js&apos;], function (math) &#123;</span><br><span class="line">  var sum = math.add(1, 2);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="CMD和AMD的区别"><a href="#CMD和AMD的区别" class="headerlink" title="CMD和AMD的区别"></a>CMD和AMD的区别</h3><ol>
+<li>AMD的依赖都定义在前面；CMD的依赖就近依赖，用到某个模块之后再去require。</li>
+<li>AMD的API是一个当多个用，CMD的API严格区分，推崇职责单一。</li>
+</ol>
+<h3 id="ES6的模块化"><a href="#ES6的模块化" class="headerlink" title="ES6的模块化"></a>ES6的模块化</h3><p>在ES6标准中，在语言的层面上实现了模块化。将渠道commonJS和AMD，成为浏览器和服务器通用的模块解决方案。</p>
+<p>在ES6中，使用export关键字来导出模块，使用import关键字来引入模块。</p>
+<p>在 ES6 中，使用export关键字来导出模块，使用import关键字引用模块。但是浏览器还没有完全兼容，需要使用babel转换成ES5。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 导出</span><br><span class="line">export function hello() &#123; &#125;;</span><br><span class="line">export default &#123;</span><br><span class="line">  // ...</span><br><span class="line">&#125;;</span><br><span class="line">// 导入</span><br><span class="line">import &#123; readFile &#125; from &apos;fs&apos;;</span><br><span class="line">import React from &apos;react&apos;;</span><br></pre></td></tr></table></figure>
+<p>使用import导入模块时，需要知道要加载的变量名或函数名。</p>
+<p>在ES6中还提供了export default，为模块指定默认输出.对应导入模块import时，不需要使用大括号。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/es6/" rel="tag"># es6</a>
+          
+            <a href="/tags/commonJS/" rel="tag"># commonJS</a>
+          
+            <a href="/tags/import/" rel="tag"># import</a>
+          
+            <a href="/tags/export/" rel="tag"># export</a>
+          
+            <a href="/tags/AMD/" rel="tag"># AMD</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/07/工程化/webhook自动部署git项目/" rel="next" title="webhook自动部署git项目">
+                <i class="fa fa-chevron-left"></i> webhook自动部署git项目
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">heoh</p>
+              <p class="site-description motion-element" itemprop="description">大明的一些小想法。 有一些随笔和学习笔记。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">5</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">8</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/heohkid" title="GitHub &rarr; https://github.com/heohkid" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#script标签"><span class="nav-number">1.</span> <span class="nav-text">script标签</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CommonJS规范"><span class="nav-number">2.</span> <span class="nav-text">CommonJS规范</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AMD和require-js"><span class="nav-number">3.</span> <span class="nav-text">AMD和require.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CMD和sea-js"><span class="nav-number">4.</span> <span class="nav-text">CMD和sea.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CMD和AMD的区别"><span class="nav-number">5.</span> <span class="nav-text">CMD和AMD的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ES6的模块化"><span class="nav-number">6.</span> <span class="nav-text">ES6的模块化</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">heoh</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
