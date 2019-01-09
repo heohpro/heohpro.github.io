@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="地址：Vue中学到的功夫，隔山打牛大法 背景在vue中，data中定义的元素可以由this.blabla直接调用。">
+<meta name="keywords" content="angular,karma,jasmine,测试,单元测试,端到端测试">
+<meta property="og:type" content="article">
+<meta property="og:title" content="vue的数据作用域定义">
+<meta property="og:url" content="http://heoh.github.io/2018/02/01/学习笔记/作用域相关/index.html">
+<meta property="og:site_name" content="大明的小想法">
+<meta property="og:description" content="地址：Vue中学到的功夫，隔山打牛大法 背景在vue中，data中定义的元素可以由this.blabla直接调用。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2017/11/17/15fc826af0c5bd33?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">
+<meta property="og:updated_time" content="2019-01-09T02:58:43.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="vue的数据作用域定义">
+<meta name="twitter:description" content="地址：Vue中学到的功夫，隔山打牛大法 背景在vue中，data中定义的元素可以由this.blabla直接调用。">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2017/11/17/15fc826af0c5bd33?imageView2/0/w/1280/h/960/format/webp/ignore-error/1">
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="大明的小想法" type="application/atom+xml">
+
+
+
+
+  <link rel="canonical" href="http://heoh.github.io/2018/02/01/学习笔记/作用域相关/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>vue的数据作用域定义 | 大明的小想法</title>
+  
+
+
+
+
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?3601d4483819a5ab6ddabb0b6422a328";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大明的小想法</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>Home</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>Archives</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://heoh.github.io/2018/02/01/学习笔记/作用域相关/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="heoh">
+      <meta itemprop="description" content="大明的一些小想法。 有一些随笔和学习笔记。">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大明的小想法">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">vue的数据作用域定义
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-02-01 00:00:00" itemprop="dateCreated datePublished" datetime="2018-02-01T00:00:00+08:00">2018-02-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">Edited on</span>
+                
+                <time title="Modified: 2019-01-09 10:58:43" itemprop="dateModified" datetime="2019-01-09T10:58:43+08:00">2019-01-09</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/学习笔记/" itemprop="url" rel="index"><span itemprop="name">学习笔记</span></a></span>
+
+                
+                
+                  , 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/学习笔记/vue/" itemprop="url" rel="index"><span itemprop="name">vue</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>地址：<a href="https://juejin.im/post/5a7037b15188257324727a77?utm_source=gold_browser_extension" target="_blank" rel="noopener">Vue中学到的功夫，隔山打牛大法</a></p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>在vue中，data中定义的元素可以由this.blabla直接调用。</p>
+<a id="more"></a>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p><a href="https://user-gold-cdn.xitu.io/2018/1/30/16146c9c180b7ffc" target="_blank" rel="noopener">Object.defineProperty()</a></p>
+<p>可以看一下下面的实现原理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function proxy (target, source)&#123;</span><br><span class="line">    for(let key in source)&#123;</span><br><span class="line">        Object.defineProperty(target,key,&#123;</span><br><span class="line">            enumerable: true,</span><br><span class="line">            configurable: true,</span><br><span class="line">            get:function() &#123;</span><br><span class="line">                return source[key];</span><br><span class="line">            &#125;,</span><br><span class="line">            set:function(val) &#123;</span><br><span class="line">                source[key] = val;</span><br><span class="line">            &#125;</span><br><span class="line">    	&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">const father = &#123;&#125;;</span><br><span class="line">const child = &#123;</span><br><span class="line">    money:100</span><br><span class="line">&#125;</span><br><span class="line">proxy(father, child);</span><br><span class="line"></span><br><span class="line">father.money // 100</span><br></pre></td></tr></table></figure>
+<p>在定义阶段，将child中的属性全部代理到father中，这样每次调用father的数据时，返回的是child中的属性，即可直接调用。由此可见，Vue上的赋值属性和方法等都是通过类似的方法定义在vm上。</p>
+<p>同时，组件的data定义稍有不同，因为组件的实例化需要多个作用域，因此组件的data必须是一个函数，这样实例化的结果就是不同的数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data = vm._data = typeof data === &apos;function&apos; ? getData(data, vm) : data || &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>##数据响应式原理</p>
+<p>地址：<a href="https://juejin.im/post/5a0e53965188254dd935f850" target="_blank" rel="noopener">Vue响应式—-数据响应式原理</a></p>
+<p>###背景<br>众所周知，Vue的数据响应是用了Object.defineProperty()，但是具体的实现过程还需要整理一下。</p>
+<p>###实现</p>
+<p>首先做一个函数来对某个对象进行赋值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">function defineReactive (obj,key,val) &#123;</span><br><span class="line">    Object.defineProperty(obj,key,&#123;</span><br><span class="line">        enumerable: true,</span><br><span class="line">        configurable: true,</span><br><span class="line">        get: function () &#123;</span><br><span class="line">            return val;</span><br><span class="line">        &#125;,</span><br><span class="line">        set: function (newVal) &#123;</span><br><span class="line">            //判断新值与旧值是否相等</span><br><span class="line">            //判断的后半段是为了验证新值与旧值都为NaN的情况  NaN不等于自身</span><br><span class="line">            if(newVal === val || (newVal !== newVal &amp;&amp; value !== value))&#123;</span><br><span class="line">                return ;</span><br><span class="line">            &#125;</span><br><span class="line">            val = newVal;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新建的对象<code>obj</code>可以通过<code>defineReactive(obj, &#39;a&#39;, 2)</code>的方法，这样每次调用obj.a都是拿到val的值，设置时同理。每次调用<code>defineReactive</code>时都产生了一个闭包来保存<code>val</code>的值。</p>
+<h3 id="响应式流程"><a href="#响应式流程" class="headerlink" title="响应式流程"></a>响应式流程</h3><p>响应的流程一般分成了几个部分：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2017/11/17/15fc826af0c5bd33?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="流程"></p>
+<ul>
+<li>输入数据</li>
+<li>改造数据</li>
+<li>数据变动</li>
+<li>触发数据改变的条件</li>
+</ul>
+<p>关于数据变动触发数改变的事件，可以直接在<code>set()</code>方法中定义。</p>
+<p>在这个过程中，要在获取数据的时候收集依赖。Vue在改造数据属性时生成了一个<code>Dep</code>的实例。</p>
+<p>下面是<code>Dep</code>这个类的具体实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">class Dep &#123;</span><br><span class="line">    constructor()&#123;</span><br><span class="line">        //订阅的信息</span><br><span class="line">        this.subs = [];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    addSub(sub)&#123;</span><br><span class="line">        this.subs.push(sub);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    removeSub (sub) &#123;</span><br><span class="line">        remove(this.subs, sub);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //此方法的作用等同于 this.subs.push(Watcher);</span><br><span class="line">    depend()&#123;</span><br><span class="line">        if (Dep.target) &#123;</span><br><span class="line">            Dep.target.addDep(this);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //这个方法就是发布通知了 告诉你 有改变啦</span><br><span class="line">    notify()&#123;</span><br><span class="line">        const subs = this.subs.slice()</span><br><span class="line">        for (let i = 0, l = subs.length; i &lt; l; i++) &#123;</span><br><span class="line">          subs[i].update();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">Dep.target = null;</span><br></pre></td></tr></table></figure>
+<p>在Dep中，维护一个订阅队列<code>subs</code>，其中最重要的两个方法类<code>depend()</code>和<code>notify()</code>：</p>
+<ul>
+<li><code>depend()</code>：收集依赖，相当于<code>addSub()</code>，其中增加的实例相当于一个个<code>watcher</code>。</li>
+<li><code>notify()</code>：在这里集体执行所有依赖的<code>update()</code>方法。改变后续的视图部分。</li>
+</ul>
+<p>在这个<code>Dep</code>类的基础上，可以进一步扩展之前的<code>defineReactive</code>方法，在<code>set</code>阶段，之后进行页面渲染方面的工作，在<code>get</code>阶段，这时候Dep.target就是一个新建的<code>watcher</code>，然后将其加入<code>subs</code>队列作为订阅。具体如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">function defineReactive (obj,key,val) &#123;</span><br><span class="line">    const dep = new Dep();</span><br><span class="line"></span><br><span class="line">    Object.defineProperty(obj,key,&#123;</span><br><span class="line">        enumerable: true,</span><br><span class="line">        configurable: true,</span><br><span class="line">        get: function () &#123;</span><br><span class="line">            if(Dep.target)&#123;</span><br><span class="line">                //收集依赖 等同于  dep.addSub(Dep.target)</span><br><span class="line">                dep.depend()</span><br><span class="line">            &#125;</span><br><span class="line">            return val;</span><br><span class="line">        &#125;,</span><br><span class="line">        set: function (newVal) &#123;</span><br><span class="line">            if(newVal === val || (newVal !== newVal &amp;&amp; val !== val))&#123;</span><br><span class="line">                return ;</span><br><span class="line">            &#125;</span><br><span class="line">            val = newVal;</span><br><span class="line">            //发布改变</span><br><span class="line">            dep.notify();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>详解如下：</p>
+<ol>
+<li>Dep是一个类，<code>Dep.target</code>是类的属性，并不是dep实例的属性。</li>
+<li>Dep类在全局可用，所以<code>Dep.target</code>在全局能访问到，可以任意改变它的值。</li>
+<li>get这个方法使用很平常，不可能每次使用获取数据值的时候都去调用<code>dep.depend()</code>。</li>
+<li><code>dep.depend()</code>实际上就是<code>dep.addSub(Dep.target)</code>。</li>
+<li>那么最好方法就是，在使用之前把<code>Dep.target</code>设置成某个对象，在订阅完成之后设置<code>Dep.target = null</code>。</li>
+</ol>
+<p>具体的应用过程如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">const obj = &#123;&#125;;//这一句是不是感觉很熟悉  就相当于初始化vue的data ---- data:&#123;obj:&#123;&#125;&#125;;</span><br><span class="line"></span><br><span class="line">//低配的不能再低配的watcher对象（源码中是一个类，我这用一个对象代替了）</span><br><span class="line">const watcher = &#123;</span><br><span class="line">    addDep:function (dep) &#123;</span><br><span class="line">        dep.addSub(this);</span><br><span class="line">    &#125;,</span><br><span class="line">    update:function()&#123;</span><br><span class="line">        html();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">//假装这个是渲染页面的</span><br><span class="line">function html () &#123;</span><br><span class="line">    document.querySelector(&apos;body&apos;).innerHTML = obj.html;</span><br><span class="line">&#125;</span><br><span class="line">defineReactive(obj,&apos;html&apos;,&apos;how are you&apos;);//定义响应式的数据</span><br><span class="line"></span><br><span class="line">Dep.target = watcher;</span><br><span class="line">html();//第一次渲染界面</span><br><span class="line">Dep.target = null;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/angular/" rel="tag"># angular</a>
+          
+            <a href="/tags/karma/" rel="tag"># karma</a>
+          
+            <a href="/tags/jasmine/" rel="tag"># jasmine</a>
+          
+            <a href="/tags/测试/" rel="tag"># 测试</a>
+          
+            <a href="/tags/单元测试/" rel="tag"># 单元测试</a>
+          
+            <a href="/tags/端到端测试/" rel="tag"># 端到端测试</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/01/前端总结/自定义组件相关/" rel="next" title="微信小程序 ——— 自定义组件">
+                <i class="fa fa-chevron-left"></i> 微信小程序 ——— 自定义组件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">heoh</p>
+              <p class="site-description motion-element" itemprop="description">大明的一些小想法。 有一些随笔和学习笔记。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">2</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">categories</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+            <div class="feed-link motion-element">
+              <a href="/atom.xml" rel="alternate">
+                <i class="fa fa-rss"></i>
+                RSS
+              </a>
+            </div>
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  
+                  
+                    
+                  
+                  
+                    
+                  
+                  <a href="https://github.com/heohkid" title="GitHub &rarr; https://github.com/heohkid" rel="noopener" target="_blank"><i class="fa fa-fw fa-globe"></i>GitHub</a>
+                </span>
+              
+            </div>
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原理"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#响应式流程"><span class="nav-number">3.</span> <span class="nav-text">响应式流程</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">heoh</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v6.7.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
